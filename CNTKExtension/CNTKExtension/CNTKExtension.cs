@@ -9,17 +9,7 @@ namespace CNTK
 {
     public class CNTKExtension
     {
-        public enum Activation
-        {
-            None,
-            ReLu,
-            Sigmoid,
-            Tanh,
-            SoftMax
-        }
-
-        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device,
-            Activation activation = Activation.None, string outputName = "")
+        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string outputName = "")
         {
             //flatten input layer if necessary
             if (operand.Shape.Rank != 1)
@@ -28,21 +18,7 @@ namespace CNTK
                 operand = CNTKLib.Reshape(operand, new int[] { newDim });
             }
 
-            var fullyConnected = FullyConnectedLinearLayer(operand, outputDim, device, outputName);
-            switch (activation)
-            {
-                default:
-                case Activation.None:
-                    return fullyConnected;
-                case Activation.ReLu:
-                    return CNTKLib.ReLU(fullyConnected);
-                case Activation.SoftMax:
-                    return CNTKLib.Softmax(fullyConnected);
-                case Activation.Sigmoid:
-                    return CNTKLib.Sigmoid(fullyConnected);
-                case Activation.Tanh:
-                    return CNTKLib.Tanh(fullyConnected);
-            }
+            return FullyConnectedLinearLayer(operand, outputDim, device, outputName);
         }
 
         public static Function FullyConnectedLinearLayer(Variable input, int outputDim, DeviceDescriptor device,
