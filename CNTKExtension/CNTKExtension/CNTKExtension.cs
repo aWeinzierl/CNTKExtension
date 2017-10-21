@@ -25,26 +25,22 @@ namespace CNTK
             string outputName = "")
         {
             System.Diagnostics.Debug.Assert(input.Shape.Rank == 1);
+
             var inputDim = input.Shape[0];
 
-            //dimensions of the weight matrix
-            int[] s = { outputDim, inputDim };
-
-            //create the weight Matrix
-            var timesParam = new Parameter((NDShape)s, DataType.Float,
+            int[] weightMatrixDimensions = { outputDim, inputDim };
+            var weights = new Parameter((NDShape)weightMatrixDimensions, DataType.Float,
                 CNTKLib.GlorotUniformInitializer(
                     CNTKLib.DefaultParamInitScale,
                     CNTKLib.SentinelValueForInferParamInitRank,
                     CNTKLib.SentinelValueForInferParamInitRank, 1),
-                device, "timesParam");
-            var timesFunction = CNTKLib.Times(timesParam, input, "times");
+                device, "weights");
+            var timesFunction = CNTKLib.Times(weights, input, "times");
 
-            //dimension of the bias weights
-            int[] s2 = { outputDim };
+            int[] biasDimension = { outputDim };
 
-            //create biases
-            var plusParam = new Parameter(s2, 0.0f, device, "plusParam");
-            return CNTKLib.Plus(plusParam, timesFunction, outputName);
+            var bias = new Parameter(biasDimension, 0.0f, device, "plusParam");
+            return CNTKLib.Plus(bias, timesFunction, outputName);
         }
     }
 }
