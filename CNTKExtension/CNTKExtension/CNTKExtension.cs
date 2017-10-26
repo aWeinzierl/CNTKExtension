@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CNTK
 {
-    public class CNTKExtension
+    public static class CNTKExtension
     {
         public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string outputName = "")
         {
@@ -41,6 +41,11 @@ namespace CNTK
 
             var bias = new Parameter(biasDimension, 0.0f, device, "plusParam");
             return CNTKLib.Plus(bias, timesFunction, outputName);
+        }
+
+        public static bool ReachedEndOfEpoch(this UnorderedMapStreamInformationMinibatchData minibatchData)
+        {
+            return minibatchData.Values.Any(stream => stream.sweepEnd);
         }
     }
 }
