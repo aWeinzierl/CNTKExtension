@@ -9,7 +9,19 @@ namespace CNTK
 {
     public static class CNTKExtension
     {
-        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string outputName = "")
+        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device)
+        {
+            //flatten input layer if necessary
+            if (operand.Shape.Rank != 1)
+            {
+                var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
+                operand = CNTKLib.Reshape(operand, new int[] { newDim });
+            }
+
+            return FullyConnectedLinearLayer(operand, outputDim, device);
+        }
+
+        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string outputName)
         {
             //flatten input layer if necessary
             if (operand.Shape.Rank != 1)
