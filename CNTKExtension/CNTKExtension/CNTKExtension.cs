@@ -11,12 +11,12 @@ namespace CNTK
     {
         public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device)
         {
-            //flatten input layer if necessary
-            if (operand.Shape.Rank != 1)
-            {
-                var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
-                operand = CNTKLib.Reshape(operand, new int[] { newDim });
-            }
+            if (operand.Shape.Rank == 1)
+                return FullyConnectedLinearLayer(operand, outputDim, device);
+
+            //flatten input layer
+            var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
+            operand = CNTKLib.Reshape(operand, new int[] { newDim });
 
             return FullyConnectedLinearLayer(operand, outputDim, device);
         }
@@ -24,11 +24,11 @@ namespace CNTK
         public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string name)
         {
             //flatten input layer if necessary
-            if (operand.Shape.Rank != 1)
-            {
-                var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
-                operand = CNTKLib.Reshape(operand, new int[] { newDim });
-            }
+            if (operand.Shape.Rank == 1)
+                return FullyConnectedLinearLayer(operand, outputDim, device, name);
+
+            var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
+            operand = CNTKLib.Reshape(operand, new[] { newDim });
 
             return FullyConnectedLinearLayer(operand, outputDim, device, name);
         }
@@ -41,7 +41,7 @@ namespace CNTK
             var inputDim = input.Shape[0];
 
             int[] weightMatrixDimensions = { outputDim, inputDim };
-            var weights = new Parameter((NDShape)weightMatrixDimensions, DataType.Float,
+            var weights = new Parameter(weightMatrixDimensions, DataType.Float,
                 CNTKLib.GlorotUniformInitializer(
                     CNTKLib.DefaultParamInitScale,
                     CNTKLib.SentinelValueForInferParamInitRank,
