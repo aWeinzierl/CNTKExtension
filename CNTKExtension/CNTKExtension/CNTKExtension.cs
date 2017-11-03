@@ -7,14 +7,7 @@ namespace CNTK
     {
         public static Function Dense(Variable operand, int outputDim, DataType dataType, CNTKDictionary weightInitializer, DeviceDescriptor device)
         {
-            if (operand.Shape.Rank == 1)
-                return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer);
-
-            //flatten input layer
-            var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
-            operand = CNTKLib.Reshape(operand, new[] { newDim });
-
-            return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer);
+            return Dense(operand, outputDim, dataType, weightInitializer, device, "");
         }
 
         public static Function Dense(Variable operand, int outputDim, DataType dataType, CNTKDictionary weightInitializer, DeviceDescriptor device, string name)
