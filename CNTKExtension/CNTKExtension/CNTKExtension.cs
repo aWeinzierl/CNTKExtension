@@ -5,31 +5,31 @@ namespace CNTK
 {
     public static class CNTKExtension
     {
-        public static Function Dense(Variable operand, int outputDim, CNTKDictionary weightInitializer, DeviceDescriptor device)
+        public static Function Dense(Variable operand, int outputDim, DataType dataType, CNTKDictionary weightInitializer, DeviceDescriptor device)
         {
             if (operand.Shape.Rank == 1)
-                return FullyConnectedLinearLayer(operand, outputDim, device, weightInitializer);
+                return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer);
 
             //flatten input layer
             var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
             operand = CNTKLib.Reshape(operand, new[] { newDim });
 
-            return FullyConnectedLinearLayer(operand, outputDim, device, weightInitializer);
+            return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer);
         }
 
-        public static Function Dense(Variable operand, int outputDim, CNTKDictionary weightInitializer, DeviceDescriptor device, string name)
+        public static Function Dense(Variable operand, int outputDim, DataType dataType, CNTKDictionary weightInitializer, DeviceDescriptor device, string name)
         {
             //flatten input layer
             if (operand.Shape.Rank == 1)
-                return FullyConnectedLinearLayer(operand, outputDim, device, weightInitializer, name);
+                return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer, name);
 
             var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
             operand = CNTKLib.Reshape(operand, new[] { newDim });
 
-            return FullyConnectedLinearLayer(operand, outputDim, device, weightInitializer, name);
+            return FullyConnectedLinearLayer(operand, outputDim, dataType, device, weightInitializer, name);
         }
 
-        private static Function FullyConnectedLinearLayer(Variable input, int outputDim, DeviceDescriptor device,
+        private static Function FullyConnectedLinearLayer(Variable input, int outputDim, DataType dataType, DeviceDescriptor device,
             CNTKDictionary weightIntializer, string name = "")
         {
             System.Diagnostics.Debug.Assert(input.Shape.Rank == 1);
@@ -39,7 +39,7 @@ namespace CNTK
             int[] weightMatrixDimensions = { outputDim, inputDim };
             var weights = new Parameter(
                 weightMatrixDimensions,
-                DataType.Float,
+                dataType,
                 weightIntializer,
                 device,
                 "weights");
