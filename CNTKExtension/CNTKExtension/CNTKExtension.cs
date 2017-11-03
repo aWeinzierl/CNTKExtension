@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 
 namespace CNTK
@@ -16,7 +12,7 @@ namespace CNTK
 
             //flatten input layer
             var newDim = operand.Shape.Dimensions.Aggregate((d1, d2) => d1 * d2);
-            operand = CNTKLib.Reshape(operand, new int[] { newDim });
+            operand = CNTKLib.Reshape(operand, new[] { newDim });
 
             return FullyConnectedLinearLayer(operand, outputDim, device, weightInitializer);
         }
