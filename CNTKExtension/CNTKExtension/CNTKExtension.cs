@@ -21,7 +21,7 @@ namespace CNTK
             return FullyConnectedLinearLayer(operand, outputDim, device);
         }
 
-        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string outputName)
+        public static Function Dense(Variable operand, int outputDim, DeviceDescriptor device, string name)
         {
             //flatten input layer if necessary
             if (operand.Shape.Rank != 1)
@@ -30,11 +30,11 @@ namespace CNTK
                 operand = CNTKLib.Reshape(operand, new int[] { newDim });
             }
 
-            return FullyConnectedLinearLayer(operand, outputDim, device, outputName);
+            return FullyConnectedLinearLayer(operand, outputDim, device, name);
         }
 
         private static Function FullyConnectedLinearLayer(Variable input, int outputDim, DeviceDescriptor device,
-            string outputName = "")
+            string name = "")
         {
             System.Diagnostics.Debug.Assert(input.Shape.Rank == 1);
 
@@ -52,7 +52,7 @@ namespace CNTK
             int[] biasDimension = { outputDim };
 
             var bias = new Parameter(biasDimension, 0.0f, device, "plusParam");
-            return CNTKLib.Plus(bias, timesFunction, outputName);
+            return CNTKLib.Plus(bias, timesFunction, name);
         }
 
         public static bool ReachedEndOfEpoch(this UnorderedMapStreamInformationMinibatchData minibatchData)
