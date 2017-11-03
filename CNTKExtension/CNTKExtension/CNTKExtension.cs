@@ -21,7 +21,7 @@ namespace CNTK
             return FullyConnectedLinearLayer(operand, outputDim, device, outputName);
         }
 
-        public static Function FullyConnectedLinearLayer(Variable input, int outputDim, DeviceDescriptor device,
+        private static Function FullyConnectedLinearLayer(Variable input, int outputDim, DeviceDescriptor device,
             string outputName = "")
         {
             System.Diagnostics.Debug.Assert(input.Shape.Rank == 1);
